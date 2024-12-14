@@ -1,10 +1,12 @@
 import React, { useContext } from "react";
-import { Card, CardBody, CardTitle, List, ListGroupItem, NavLink, Button, Nav } from "reactstrap";
+import { Card, CardBody, CardTitle, List, ListGroupItem, NavLink, Button, Nav, Spinner } from "reactstrap";
 import PetlyContext from "./PetlyContext";
 import Favorite from "./Favorite";
 import "./OrgCard.css"
 
 // OrgCard component takes in org data for a specific org and data from any org that is favorited
+
+//it renders a card with some info about the org
 
 function OrgCard({ org, fav }) {
     const { user, getOrgAnimals } = useContext(PetlyContext)
@@ -18,14 +20,14 @@ function OrgCard({ org, fav }) {
         }
     }
 
-    let favOrgs = user ? user.favOrgs.map(orgs => (orgs.orgId, orgs.orgId)) : []
+    let favOrgs = user ? user.favOrgs.map(orgs => orgs.orgId) : []
 
 
     const handleClick = async () => {
         if (org) {
-            await getOrgAnimals(org.id, org.attributes.name)
+            return await getOrgAnimals(org.id, org.attributes.name)
         } else if (fav) {
-            await getOrgAnimals(fav.orgId, fav.orgName)
+            return await getOrgAnimals(fav.orgId, fav.orgName)
         }
     }
 
@@ -102,7 +104,7 @@ function OrgCard({ org, fav }) {
                             <Button onClick={handleClick} color="primary">See Our Pets!</Button>
                         </CardBody>
                     </Card>
-                    : <></>}
+                    : <div> <p>Loading...</p><Spinner color="info" /></div>}
         </>
 
     )

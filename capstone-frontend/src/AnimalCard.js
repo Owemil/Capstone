@@ -90,6 +90,7 @@ function AnimalCard({ nearby, search, id, fav }) {
                                 petPic: search.pictureThumbnailUrl
                             }}
                         />}
+
                     <CardImg
                         alt={name}
                         src={search.pictureThumbnailUrl}

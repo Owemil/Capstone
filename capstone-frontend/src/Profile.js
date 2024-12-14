@@ -9,7 +9,7 @@ import AnimalCard from "./AnimalCard";
  * it renders a form that displays the users current information and allows them to edit that same information excluding username
 */
 
-function Profile({ currUser, update }) {
+function Profile({ update }) {
     const [activeTab, setActiveTab] = useState(1)
     const { user } = useContext(PetlyContext)
     const [editForm, setEditForm] = useState()
@@ -143,7 +143,7 @@ function Profile({ currUser, update }) {
                         }) : <p>No favorites yet!</p>}
                     </TabPane>
                 </TabContent>
-            </div> : <div> <p>Loading...<Spinner color="info" /></p></div>}
+            </div> : <div> <p>Loading...</p><Spinner color="info" /></div>}
         </>
 
     )

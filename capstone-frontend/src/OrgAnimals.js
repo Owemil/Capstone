@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import AnimalCard from "./AnimalCard";
 import { Form, Input, Pagination, PaginationItem, PaginationLink, Spinner } from "reactstrap";
 
 // OrgAnimals component takes in animals to display and a function to get animals
+
+//it renders a search form and cards with pet info that link to their respective page
 
 function OrgAnimals({ animals, getAnimals }) {
     const [filteredSearch, setFilteredSearch] = useState()
@@ -36,7 +38,7 @@ function OrgAnimals({ animals, getAnimals }) {
     }
     const handlePage = async (page) => {
         const res = await getAnimals(id, orgName, page)
-        console.log(res)
+
         res.meta.count === 0 ?
             setFilteredSearch(() => ({ meta: res.meta, animals: ["Sorry, we couldn't find what you're looking for.."] }))
             :
@@ -103,7 +105,7 @@ function OrgAnimals({ animals, getAnimals }) {
                     )
                 })
                 :
-                animals ?
+                animals.animals ?
                     animals.animals.map(animal => {
                         return (
                             <div className="animal-card" >
@@ -133,9 +135,9 @@ function OrgAnimals({ animals, getAnimals }) {
                         </PaginationItem>
                         {paginate(
                             filteredSearch.meta.pageReturned,
-                            filteredSearch.meta.pages).map(page => {
+                            filteredSearch.meta.pages).map((page, idx) => {
                                 return (
-                                    <PaginationItem>
+                                    <PaginationItem key={idx}>
                                         <PaginationLink onClick={() => handlePage(page)}>
                                             {page}
                                         </PaginationLink>
@@ -176,9 +178,9 @@ function OrgAnimals({ animals, getAnimals }) {
                             </PaginationItem>
                             {paginate(
                                 animals.meta.pageReturned,
-                                animals.meta.pages).map(page => {
+                                animals.meta.pages).map((page, idx) => {
                                     return (
-                                        <PaginationItem>
+                                        <PaginationItem key={idx}>
                                             <PaginationLink onClick={() => handlePage(page)}>
                                                 {page}
                                             </PaginationLink>

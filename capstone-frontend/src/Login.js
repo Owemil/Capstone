@@ -12,18 +12,43 @@ function Login({ login }) {
         username: "",
         password: ""
     })
+    const [errors, setErrors] = useState({})
     const handleChange = evt => {
         const { name, value } = evt.target
 
         setLoginForm(oldForm => ({ ...oldForm, [name]: value }))
 
     }
+
+    const validateForm = () => {
+        let newErrors = {};
+
+        if (!loginForm.username) {
+            newErrors.username = 'Username is required';
+        }
+
+        if (!loginForm.password) {
+            newErrors.password = 'Password is required';
+        }
+
+        setErrors(() => newErrors);
+        return Object.keys(newErrors).length === 0; // Returns true if no errors
+    };
+
+
     const handleClick = async evt => {
-        await login(evt, 'auth/token', loginForm)
-        setLoginForm({
-            username: "",
-            password: ""
-        })
+        if (validateForm()) {
+            try {
+                await login(evt, 'auth/token', loginForm)
+            } catch (err) {
+                setErrors(oldErr => ({ ...oldErr, invalid: "username and password do not match" }))
+            }
+            setLoginForm({
+                username: "",
+                password: ""
+            })
+        }
+
     }
     return (
         <div class="login-div">
@@ -38,12 +63,21 @@ function Login({ login }) {
                                 Username
                             </Label>
                             <Input id="login-username" name="username" value={loginForm.username} onChange={handleChange} />
+                            {errors.username && <p style={{
+                                color: "red"
+                            }}>{errors.username}</p>}
                         </FormGroup>
+                        {errors.invalid && <p style={{
+                            color: "red"
+                        }}>{errors.invalid}</p>}
                         <FormGroup>
                             <Label htmlFor="login-password">
                                 Password
                             </Label>
                             <Input id="login-password" name="password" value={loginForm.password} onChange={handleChange} type="password" />
+                            {errors.password && <p style={{
+                                color: "red"
+                            }}>{errors.password}</p>}
                         </FormGroup>
                         <Button onClick={handleClick} color="primary">
                             Login

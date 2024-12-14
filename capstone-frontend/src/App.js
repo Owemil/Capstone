@@ -16,7 +16,6 @@ import OrgSearch from './OrgSearch';
 import OrgAnimals from './OrgAnimals';
 
 function App() {
-  const [nearbySearch, setNearbySearch] = useState()
   const [nearbyPetly, setNearbyPetly] = useState()
   const [singleAnimal, setSingleAnimal] = useState()
   const [orgAnimals, setOrgAnimals] = useState()
@@ -95,10 +94,6 @@ function App() {
         const petly = await RescueAPI.postNearby(filters, locData)
 
         setNearbyPetly(() => [...petly.data, petly.meta])
-        filters.limit = 30
-        filters.sort = "animals.distance"
-        const search = await RescueAPI.postNearby(filters, locData)
-        setNearbySearch(() => [...search.data, search.meta])
 
       }
       populateNearby(locData)
@@ -106,6 +101,8 @@ function App() {
 
 
   }, [isLoading, locData])
+
+
   // function for cleaning up pet about info
   function slugify(str) {
     str = str.toLowerCase().trim();
@@ -153,9 +150,7 @@ function App() {
   }
   // function to get single animal data for AnimalDetails component
   const getAnimal = async id => {
-    console.log(id)
     const animal = await RescueAPI.getAnimal(id)
-    console.log(animal)
     setSingleAnimal(() => ({ ...animal }))
     navigate(`/animal/${id}`)
 
@@ -193,6 +188,16 @@ function App() {
     }
   }
 
+  async function getNearby() {
+    const filters = {
+      page: 1,
+      limit: 30,
+      sort: "animals.distance"
+    }
+    const search = await RescueAPI.postNearby(filters, locData)
+    // setNearbySearch(() => [...search.data, search.meta])
+    return search
+  }
 
   // function for adding a favorite pet
   const addFavPet = async (username, pet) => {
@@ -218,13 +223,13 @@ function App() {
 
 
   return (
-    <PetlyContext.Provider value={{ user, getAnimal, filter, otherFilters, slugify, getOrgAnimals, addFavPet, removeFavPet, addFavOrg, removeFavOrg, setReRender }}>
+    <PetlyContext.Provider value={{ user, getNearby, getAnimal, filter, otherFilters, slugify, getOrgAnimals, addFavPet, removeFavPet, addFavOrg, removeFavOrg, setReRender }}>
       <div className="App">
         <NavBar logout={logout} user={user} other={otherFilters} />
         <Routes>
           <Route path="/" element={<Petly nearby={nearbyPetly} getanimal={getAnimal} />} />
           <Route path="/search">
-            <Route index element={<Search displayItems={nearbySearch} />} />
+            <Route index element={<Search />} />
             <Route path=":species" element={<Search />} />
           </Route>
           <Route path="/animal/:id" element={<AnimalDetails animal={singleAnimal} getOtherPets={getOtherPets} />} />

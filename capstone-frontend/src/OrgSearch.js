@@ -25,22 +25,58 @@ function OrgSearch({ search, locData }) {
 
     const firstPage = async () => {
         const res = await search(orgSearch)
-        setFilteredSearch(() => ({ meta: res.data.meta, orgs: res.data.data }))
+        res.data.meta.count === 0 ?
+            setFilteredSearch(() => ({
+                meta: res.data.meta,
+                orgs: ["We couldn't find anything.."]
+            }))
+            :
+            setFilteredSearch(() => ({
+                meta: res.data.meta,
+                orgs: res.data.data
+            }))
     }
     const prevPage = async (page) => {
         const prev = page - 1
         const res = await search(orgSearch, prev)
-        setFilteredSearch(() => ({ meta: res.data.meta, orgs: res.data.data }))
+        res.data.meta.count === 0 ?
+            setFilteredSearch(() => ({
+                meta: res.data.meta,
+                orgs: ["We couldn't find anything.."]
+            }))
+            :
+            setFilteredSearch(() => ({
+                meta: res.data.meta,
+                orgs: res.data.data
+            }))
     }
     const handlePage = async (page) => {
         const res = await search(orgSearch, page)
 
-        setFilteredSearch(() => ({ meta: res.data.meta, orgs: res.data.data }))
+        res.data.meta.count === 0 ?
+            setFilteredSearch(() => ({
+                meta: res.data.meta,
+                orgs: ["We couldn't find anything.."]
+            }))
+            :
+            setFilteredSearch(() => ({
+                meta: res.data.meta,
+                orgs: res.data.data
+            }))
     }
     const nextPage = async (page) => {
         const prev = page + 1
         const res = await search(orgSearch, prev)
-        setFilteredSearch(() => ({ meta: res.data.meta, orgs: res.data.data }))
+        res.data.meta.count === 0 ?
+            setFilteredSearch(() => ({
+                meta: res.data.meta,
+                orgs: ["We couldn't find anything.."]
+            }))
+            :
+            setFilteredSearch(() => ({
+                meta: res.data.meta,
+                orgs: res.data.data
+            }))
     }
 
     const paginate = (page, total, arr = []) => {

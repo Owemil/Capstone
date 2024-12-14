@@ -32,9 +32,7 @@ function Petly({ nearby }) {
             </div >
 
             <h3 className="nearby-banner">
-                <NavLink href="/search">
-                    Pets available for Adoption Nearby
-                </NavLink>
+                Pets available for Adoption Nearby
             </h3>
 
             <div className="nearby">
@@ -47,7 +45,7 @@ function Petly({ nearby }) {
                         )
                     } else {
                         return (
-                            <div className="link-card" key={animal.id} >
+                            <div className="link-card" key={animal.id + 1} >
                                 <LinkCard meta={animal} />
                             </div>
                         )

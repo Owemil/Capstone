@@ -4,7 +4,7 @@ import { Button, Col, Form, Input, Pagination, PaginationItem, PaginationLink, R
 import PetlyContext from "./PetlyContext";
 import AnimalCard from "./AnimalCard";
 
-/**Search component doesn't take in any data
+/**Search component takes in the functions filter and slugify, and the obj otherFilters from context
  * 
  *  it renders a search page for animals of many species within 100 miles or more
  * 
@@ -13,10 +13,10 @@ import AnimalCard from "./AnimalCard";
 function Search() {
     const { species } = useParams()
     const navigate = useNavigate()
-    const { filter, otherFilters, slugify } = useContext(PetlyContext)
+    const { filter, otherFilters, slugify, getNearby } = useContext(PetlyContext)
     const [filterSpecies, setFilterSpecies] = useState(["Dogs", "Cats", "Birds", "Rabbits", "Barnyard", "Reptile", "Small & Furry", "Scales, Shells & Other"])
     const [filteredSearch, setFilteredSearch] = useState()
-    const slugSpecies = slugify(species)
+    const slugSpecies = species ? slugify(species) : ""
     const [searchForm, setSearchForm] = useState({
         species: otherFilters.filterSet.has(species) ?
             otherFilters[slugSpecies][0] : species,
@@ -29,11 +29,12 @@ function Search() {
     })
 
     useEffect(() => {
-
         if (otherFilters.filterSet.has(species)) {
             setFilterSpecies(() => (otherFilters[slugify(species)]))
         }
         async function populateSearch() {
+            console.log("search")
+
             const res = await filter(searchForm)
             res.meta.count === 0 ?
                 setFilteredSearch(() => ({ meta: res.meta }))
@@ -45,30 +46,81 @@ function Search() {
 
 
         }
-        populateSearch()
+        if (species) {
+
+            populateSearch()
+        } else {
+            console.log(species, "nearby")
+            async function populateNearby() {
+                const res = await getNearby()
+                setFilteredSearch(() => ({
+                    meta: res.meta,
+                    animals: [...res.data]
+                }))
+
+            }
+            populateNearby()
+        }
     }, [species, searchForm])
 
 
     const firstPage = async () => {
         const res = await filter(searchForm)
-        setFilteredSearch(() => ({ meta: res.meta, animals: [...res.data] }))
+        res.meta.count === 0 ?
+            setFilteredSearch(() => ({
+                meta: res.data.meta,
+                animals: ["We couldn't find anything.."]
+            }))
+            :
+            setFilteredSearch(() => ({
+                meta: res.data.meta,
+                animals: [...res.data]
+            }))
     }
+
     const prevPage = async (page) => {
         const prev = page - 1
         const res = await filter(searchForm, prev)
-        setFilteredSearch(() => ({ meta: res.meta, animals: [...res.data] }))
+        res.meta.count === 0 ?
+            setFilteredSearch(() => ({
+                meta: res.meta,
+                animals: ["We couldn't find anything.."]
+            }))
+            :
+            setFilteredSearch(() => ({
+                meta: res.meta,
+                animals: [...res.data]
+            }))
     }
     const handlePage = async (page) => {
         const res = await filter(searchForm, page)
 
-        setFilteredSearch(() => ({ meta: res.meta, animals: [...res.data] }))
+        res.meta.count === 0 ?
+            setFilteredSearch(() => ({
+                meta: res.meta,
+                animals: ["We couldn't find anything.."]
+            }))
+            :
+            setFilteredSearch(() => ({
+                meta: res.meta,
+                animals: [...res.data]
+            }))
 
 
     }
     const nextPage = async (page) => {
         const prev = page + 1
         const res = await filter(searchForm, prev)
-        setFilteredSearch(() => ({ meta: res.meta, animals: [...res.data] }))
+        res.meta.count === 0 ?
+            setFilteredSearch(() => ({
+                meta: res.meta,
+                animals: ["We couldn't find anything.."]
+            }))
+            :
+            setFilteredSearch(() => ({
+                meta: res.meta,
+                animals: [...res.data]
+            }))
     }
 
     const paginate = (page, total, arr = []) => {

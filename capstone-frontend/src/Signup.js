@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Button, Card, CardBody, CardTitle, Form, FormGroup, Input, Label } from "reactstrap";
+import "./Signup.css"
 
 /**
  * Signup component takes in the function signup which contains the api call for making a new account and recieving a token
@@ -24,7 +25,7 @@ function Signup({ signup }) {
         if (!signupForm.username) {
             newErrors.username = 'Username is required';
         } else if (signupForm.username.length > 25) {
-            newErrors.password = 'Username must be 25 characters or less';
+            newErrors.username = 'Username must be 25 characters or less';
         }
 
         if (!signupForm.password) {
@@ -74,47 +75,57 @@ function Signup({ signup }) {
 
 
     return (
-        <div className="login-div">
-            <Card className="login-card">
+        <div className="signup-div">
+            <Card className="signup-card">
                 <CardBody>
-                    <CardTitle>
-                        Petly Login
+                    <CardTitle tag="h2">
+                        Petly Signup
                     </CardTitle>
                     <Form>
                         <FormGroup>
                             <Label htmlFor="signup-username">
                                 Username
                             </Label>
-                            <Input id="signup-username" name="username" value={signupForm.username} onChange={handleChange} required />
-                            {errors.username && <p>{errors.username}</p>}
+                            <Input id="signup-username" name="username" palceholder="" value={signupForm.username} onChange={handleChange} required />
+                            {errors.username && <p style={{
+                                color: "red"
+                            }}>{errors.username}</p>}
                         </FormGroup>
                         <FormGroup>
                             <Label htmlFor="signup-password">
                                 Password
                             </Label>
                             <Input id="signup-password" name="password" value={signupForm.password} onChange={handleChange} required />
-                            {errors.password && <p>{errors.password}</p>}
+                            {errors.password && <p style={{
+                                color: "red"
+                            }}>{errors.password}</p>}
                         </FormGroup>
                         <FormGroup>
                             <Label htmlFor="signup-firstName">
                                 First Name
                             </Label>
                             <Input id="signup-firstName" name="firstName" value={signupForm.firstName} onChange={handleChange} required />
-                            {errors.firstName && <p>{errors.firstName}</p>}
+                            {errors.firstName && <p style={{
+                                color: "red"
+                            }}>{errors.firstName}</p>}
                         </FormGroup>
                         <FormGroup>
                             <Label htmlFor="signup-lastName">
                                 Last Name
                             </Label>
                             <Input id="signup-lastName" name="lastName" value={signupForm.lastName} onChange={handleChange} required />
-                            {errors.lastName && <p>{errors.lastName}</p>}
+                            {errors.lastName && <p style={{
+                                color: "red"
+                            }}>{errors.lastName}</p>}
                         </FormGroup>
                         <FormGroup>
                             <Label htmlFor="signup-email">
                                 Email
                             </Label>
                             <Input id="signup-email" name="email" value={signupForm.email} onChange={handleChange} required />
-                            {errors.email && <p color="danger">{errors.email}</p>}
+                            {errors.email && <p style={{
+                                color: "red"
+                            }}>{errors.email}</p>}
                         </FormGroup>
                         <FormGroup>
                             <Label htmlFor="signup-zipCode">
@@ -122,7 +133,7 @@ function Signup({ signup }) {
                             </Label>
                             <Input id="signup-zipCode" name="zipCode" value={signupForm.zipCode} onChange={handleChange} />
                         </FormGroup>
-                        <Button onClick={handleClick}>
+                        <Button onClick={handleClick} color="primary">
                             Signup
                         </Button>
                     </Form>

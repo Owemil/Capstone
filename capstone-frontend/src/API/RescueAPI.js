@@ -58,15 +58,19 @@ class RescueAPI {
                         operation: "equals",
                         criteria: "Available"
                     },
-                    {
-                        fieldName: "species.plural",
-                        operation: "equals",
-                        criteria: species
-                    }
+
                 ],
 
             }
         }
+        if (species != " ") {
+            data.data.filters.push({
+                fieldName: "species.plural",
+                operation: "equals",
+                criteria: species
+            })
+        }
+        console.log(data)
         if (locData) {
             const { lat, lon, distanceType } = locData
             let filterRadius

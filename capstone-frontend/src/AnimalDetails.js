@@ -14,6 +14,7 @@ import {
     TabPane,
     ListGroup,
     ListGroupItem,
+    Spinner,
 } from 'reactstrap';
 
 // AnimalDetails component takes in a specfic animals data and a function to help build a detailed page for the animal. with about info, more animals, and org data
@@ -24,10 +25,9 @@ function AnimalDetails({ animal, getOtherPets }) {
     const [otherPets, setOtherPets] = useState()
     const [otherNearbyPets, setOtherNearbyPets] = useState()
     const [activeTab, setActiveTab] = useState(2)
-
+    console.log(animal)
     const storyHTML = new DOMParser().parseFromString(animal.data[0].attributes.descriptionHtml, "text/html")
-
-
+    const animalData = animal.data[0].attributes
     const items = animal.included.filter(i => (i.type === "pictures" || i.type === "videourls"))
 
     const [species, org] = animal.included.filter(i => (i.type === "species" || i.type === "orgs"))
@@ -101,7 +101,7 @@ function AnimalDetails({ animal, getOtherPets }) {
 
     return (
         <>
-            <div className="animal-pics">
+            {animal ? <><div className="animal-pics">
                 <Carousel
                     activeIndex={activeIndex}
                     next={next}
@@ -130,237 +130,238 @@ function AnimalDetails({ animal, getOtherPets }) {
                     />
                 </Carousel>
             </div>
-            <div className="animal-about">
+                <div className="animal-about">
 
-                {animal.data[0].attributes ? <div className='animal-header'>
-                    <h1 className="animal-name">{animal.data[0].attributes.name}</h1>
-                    <p className="animal-breed-loc"><b>{animal.data[0].attributes.breedPrimary}</b>----<b>{org.attributes.citystate}</b></p>
-                    <p>{animal.data[0].attributes.ageGroup} - {animal.data[0].attributes.sex} - {animal.data[0].attributes.sizeGroup} - {colors.attributes.name}</p>
-                </div>
-                    :
-                    <p>Loading info..</p>}
+                    {animalData ? <div className='animal-header'>
+                        <h1 className="animal-name">{animalData.name}</h1>
+                        <p className="animal-breed-loc"><b>{animalData.breedPrimary}</b>----<b>{org.attributes.citystate}</b></p>
+                        <p>{animalData.ageGroup} - {animalData.sex} - {animalData.sizeGroup} - {colors ? colors.attributes.name : "Missing Color"}</p>
+                    </div>
+                        :
+                        <p>Loading info..</p>}
 
 
-                <Nav tabs>
-                    <NavItem>
-                        <NavLink
-                            className="animal-tab"
-                            data="1"
-                            onClick={handleTab}
+                    <Nav tabs>
+                        <NavItem>
+                            <NavLink
+                                className="animal-tab"
+                                data="1"
+                                onClick={handleTab}
 
-                        >
-                            About
-                        </NavLink>
-                    </NavItem>
-                    <NavItem>
-                        <NavLink
-                            className="animal-tab active"
-                            data="2"
-                            onClick={handleTab}
+                            >
+                                About
+                            </NavLink>
+                        </NavItem>
+                        <NavItem>
+                            <NavLink
+                                className="animal-tab active"
+                                data="2"
+                                onClick={handleTab}
 
-                        >
-                            Story
-                        </NavLink>
-                    </NavItem>
-                    <NavItem>
-                        <NavLink
-                            className="animal-tab"
-                            data="3"
-                            onClick={handleTab}
-                        >
-                            Organization
-                        </NavLink>
-                    </NavItem>
-                    <NavItem>
-                        <NavLink
-                            className="animal-tab"
-                            data="4"
-                            onClick={handleTab}
-                        >
-                            Other Pets
-                        </NavLink>
-                    </NavItem>
-                </Nav>
-                <TabContent activeTab={`${activeTab}`}>
-                    <TabPane tabId="1">
+                            >
+                                Story
+                            </NavLink>
+                        </NavItem>
+                        <NavItem>
+                            <NavLink
+                                className="animal-tab"
+                                data="3"
+                                onClick={handleTab}
+                            >
+                                Organization
+                            </NavLink>
+                        </NavItem>
+                        <NavItem>
+                            <NavLink
+                                className="animal-tab"
+                                data="4"
+                                onClick={handleTab}
+                            >
+                                Other Pets
+                            </NavLink>
+                        </NavItem>
+                    </Nav>
+                    <TabContent activeTab={`${activeTab}`}>
+                        <TabPane tabId="1">
 
-                        <ListGroup flush className='about-header'>
-                            <ListGroupItem>
-                                <h4>
-                                    About
-                                </h4>
-                            </ListGroupItem>
-                            <ListGroupItem></ListGroupItem>
-                        </ListGroup>
+                            <ListGroup flush className='about-header'>
+                                <ListGroupItem>
+                                    <h4>
+                                        About
+                                    </h4>
+                                </ListGroupItem>
+                                <ListGroupItem></ListGroupItem>
+                            </ListGroup>
 
-                        <div>
-                            {animal.data[0].attributes.qualities ?
+                            <div>
+                                {animal.data[0].attributes.qualities ?
+                                    <div style={{
+                                        width: "400px"
+                                    }}>
+                                        <ListGroup flush>
+                                            <ListGroupItem tag="h5">
+                                                Charactertistics
+                                            </ListGroupItem>
+                                            <ListGroupItem >
+                                                {animal.data[0].attributes.qualities.map(q => `${q}, `)}
+                                            </ListGroupItem>
+                                        </ListGroup>
+                                    </div>
+
+                                    : <></>}
+
                                 <div style={{
                                     width: "400px"
                                 }}>
                                     <ListGroup flush>
                                         <ListGroupItem tag="h5">
-                                            Charactertistics
+                                            Breed & Coat Length
                                         </ListGroupItem>
-                                        <ListGroupItem >
-                                            {animal.data[0].attributes.qualities.map(q => `${q}, `)}
+                                        <ListGroupItem>
+                                            {animal.data[0].attributes.breedString}
                                         </ListGroupItem>
                                     </ListGroup>
                                 </div>
-
-                                : <></>}
-
-                            <div style={{
-                                width: "400px"
-                            }}>
-                                <ListGroup flush>
-                                    <ListGroupItem tag="h5">
-                                        Breed & Coat Length
-                                    </ListGroupItem>
-                                    <ListGroupItem>
-                                        {animal.data[0].attributes.breedString}
-                                    </ListGroupItem>
-                                </ListGroup>
-                            </div>
-                            <div style={{
-                                width: "400px"
-                            }}>
-                                <ListGroup flush>
-                                    <ListGroupItem tag="h5">
-                                        Adoption Status
-                                    </ListGroupItem>
-                                    <ListGroupItem>
-                                        {!animal.data[0].attributes.isAdoptionPending ? `Ready to be Adopted!` : `Adoption Currently Pending..`}
-                                    </ListGroupItem>
-                                </ListGroup>
-                            </div>
-                            {animal.data[0].attributes.adoptionFeeString ?
                                 <div style={{
                                     width: "400px"
                                 }}>
-                                    <ListGroup>
+                                    <ListGroup flush>
                                         <ListGroupItem tag="h5">
-                                            Adoption Fee
+                                            Adoption Status
                                         </ListGroupItem>
                                         <ListGroupItem>
-                                            {`$${animal.data[0].attributes.adoptionFeeString}`}
+                                            {!animal.data[0].attributes.isAdoptionPending ? `Ready to be Adopted!` : `Adoption Currently Pending..`}
                                         </ListGroupItem>
                                     </ListGroup>
                                 </div>
-                                : <></>}
+                                {animal.data[0].attributes.adoptionFeeString ?
+                                    <div style={{
+                                        width: "400px"
+                                    }}>
+                                        <ListGroup>
+                                            <ListGroupItem tag="h5">
+                                                Adoption Fee
+                                            </ListGroupItem>
+                                            <ListGroupItem>
+                                                {`$${animal.data[0].attributes.adoptionFeeString}`}
+                                            </ListGroupItem>
+                                        </ListGroup>
+                                    </div>
+                                    : <></>}
 
-                        </div>
+                            </div>
 
-                    </TabPane>
-                    <TabPane tabId="2">
+                        </TabPane>
+                        <TabPane tabId="2">
 
-                        <div className="animal-story">
-                            <ListGroup flush className='about-header'>
-                                <ListGroupItem>
-                                    <h4>Meet {animal.data[0].attributes.name}</h4>
-                                </ListGroupItem>
-                                <ListGroupItem></ListGroupItem>
-                            </ListGroup>
-
-
-
-                            {storyHTML.body.textContent}
+                            <div className="animal-story">
+                                <ListGroup flush className='about-header'>
+                                    <ListGroupItem>
+                                        <h4>Meet {animal.data[0].attributes.name}</h4>
+                                    </ListGroupItem>
+                                    <ListGroupItem></ListGroupItem>
+                                </ListGroup>
 
 
-                        </div>
 
-                    </TabPane>
-                    <TabPane tabId="3">
+                                {storyHTML.body.textContent}
 
-                        <div>
-                            <ListGroup flush className='about-header'>
-                                <ListGroupItem>
-                                    <h4>{org.attributes.name}</h4>
-                                </ListGroupItem>
-                                <ListGroupItem></ListGroupItem>
-                            </ListGroup>
-                            <div style={{
-                                width: "500px"
-                            }}>
+
+                            </div>
+
+                        </TabPane>
+                        <TabPane tabId="3">
+
+                            <div>
+                                <ListGroup flush className='about-header'>
+                                    <ListGroupItem>
+                                        <h4>{org.attributes.name}</h4>
+                                    </ListGroupItem>
+                                    <ListGroupItem></ListGroupItem>
+                                </ListGroup>
+                                <div style={{
+                                    width: "500px"
+                                }}>
+                                    <ListGroup flush>
+                                        <ListGroupItem>
+                                            {`Services: ${org.attributes.services}`}
+                                        </ListGroupItem>
+                                        <ListGroupItem>
+                                            {`Adoption Process: ${org.attributes.adoptionProcess}`}
+                                        </ListGroupItem>
+                                        <ListGroupItem>
+                                            {`Contact: ${org.attributes.phone ? org.attributes.phone : org.attributes.email}`}
+                                        </ListGroupItem>
+                                        <ListGroupItem>
+                                            {`Located in: ${org.attributes.citystate}, ${org.attributes.postalcode}`}
+                                        </ListGroupItem>
+                                        <ListGroupItem>
+                                            <NavLink href={org.attributes.url}>Website: {org.attributes.url}</NavLink>
+                                        </ListGroupItem>
+                                    </ListGroup>
+                                </div>
+                            </div>
+
+                        </TabPane>
+                        <TabPane tabId="4">
+                            <div className='other-cards' >
                                 <ListGroup flush>
                                     <ListGroupItem>
-                                        {`Services: ${org.attributes.services}`}
+                                        <h4>Other {species.attributes.plural} from {org.attributes.name} </h4>
                                     </ListGroupItem>
-                                    <ListGroupItem>
-                                        {`Adoption Process: ${org.attributes.adoptionProcess}`}
-                                    </ListGroupItem>
-                                    <ListGroupItem>
-                                        {`Contact: ${org.attributes.phone ? org.attributes.phone : org.attributes.email}`}
-                                    </ListGroupItem>
-                                    <ListGroupItem>
-                                        {`Located in: ${org.attributes.citystate}, ${org.attributes.postalcode}`}
-                                    </ListGroupItem>
-                                    <ListGroupItem>
-                                        <NavLink href={org.attributes.url}>Website: {org.attributes.url}</NavLink>
-                                    </ListGroupItem>
+                                    <ListGroupItem></ListGroupItem>
                                 </ListGroup>
+                                {otherPets ? otherPets.map(animal => {
+                                    if (animal.attributes) {
+                                        return (
+                                            <div className="animal-card" >
+                                                <AnimalCard nearby={animal.attributes} id={animal.id} key={animal.id} />
+                                            </div>
+                                        )
+                                    } else {
+                                        return (
+                                            <div className="link-card" >
+                                                <LinkCard meta={animal} key={animal.id} />
+                                            </div>
+                                        )
+
+
+                                    }
+                                })
+                                    : <p>Finding pets...</p>}
                             </div>
-                        </div>
-
-                    </TabPane>
-                    <TabPane tabId="4">
-                        <div className='other-cards' >
-                            <ListGroup flush>
-                                <ListGroupItem>
-                                    <h4>Other {species.attributes.plural} from {org.attributes.name} </h4>
-                                </ListGroupItem>
-                                <ListGroupItem></ListGroupItem>
-                            </ListGroup>
-                            {otherPets ? otherPets.map(animal => {
-                                if (animal.attributes) {
-                                    return (
-                                        <div className="animal-card" >
-                                            <AnimalCard nearby={animal.attributes} id={animal.id} key={animal.id} />
-                                        </div>
-                                    )
-                                } else {
-                                    return (
-                                        <div className="link-card" >
-                                            <LinkCard meta={animal} key={animal.id} />
-                                        </div>
-                                    )
+                            <div className='other-cards'>
+                                <ListGroup flush>
+                                    <ListGroupItem>
+                                        <h4>Other {species.attributes.plural} Nearby </h4>
+                                    </ListGroupItem>
+                                    <ListGroupItem></ListGroupItem>
+                                </ListGroup>
+                                {otherNearbyPets ? otherNearbyPets.map(animal => {
+                                    if (animal.attributes) {
+                                        return (
+                                            <div className="animal-card" >
+                                                <AnimalCard nearby={animal.attributes} id={animal.id} key={animal.id} />
+                                            </div>
+                                        )
+                                    } else {
+                                        return (
+                                            <div className="link-card" >
+                                                <LinkCard meta={animal} key={animal.id} />
+                                            </div>
+                                        )
 
 
-                                }
-                            })
-                                : <p>Finding pets...</p>}
-                        </div>
-                        <div className='other-cards'>
-                            <ListGroup flush>
-                                <ListGroupItem>
-                                    <h4>Other {species.attributes.plural} Nearby </h4>
-                                </ListGroupItem>
-                                <ListGroupItem></ListGroupItem>
-                            </ListGroup>
-                            {otherNearbyPets ? otherNearbyPets.map(animal => {
-                                if (animal.attributes) {
-                                    return (
-                                        <div className="animal-card" >
-                                            <AnimalCard nearby={animal.attributes} id={animal.id} key={animal.id} />
-                                        </div>
-                                    )
-                                } else {
-                                    return (
-                                        <div className="link-card" >
-                                            <LinkCard meta={animal} key={animal.id} />
-                                        </div>
-                                    )
+                                    }
+                                })
+                                    : <p>Sorry we cant find any animals nearby...</p>}
+                            </div>
 
+                        </TabPane>
+                    </TabContent>
 
-                                }
-                            })
-                                : <p>Sorry we cant find any animals nearby...</p>}
-                        </div>
+                </div></> : <div><p>Loading...</p><Spinner /></div>}
 
-                    </TabPane>
-                </TabContent>
-
-            </div>
         </>
     );
 }

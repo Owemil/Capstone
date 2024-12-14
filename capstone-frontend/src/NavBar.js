@@ -22,7 +22,6 @@ import "./NavBar.css"
 
 function NavBar({ logout, user, other }) {
   const [isOCOpen, toggleOC] = useToggle()
-  console.log(user)
   return (
     <div>
       {user ?
@@ -46,9 +45,9 @@ function NavBar({ logout, user, other }) {
               isOpen={isOCOpen}
             >
               <OffcanvasHeader onClick={toggleOC}>
-                <h2 className='oc-header'>
-                  <NavLink href='/' >Petly</NavLink>
-                </h2>
+
+                <NavLink href='/' className='oc-header'>Petly</NavLink>
+
                 <CloseButton className='oc-header'></CloseButton>
               </OffcanvasHeader>
               <OffcanvasBody>
@@ -146,9 +145,9 @@ function NavBar({ logout, user, other }) {
               isOpen={isOCOpen}
             >
               <OffcanvasHeader onClick={toggleOC}>
-                <h2 className='oc-header'>
-                  <NavLink href='/' >Petly</NavLink>
-                </h2>
+
+                <NavLink href='/' className='oc-header'>Petly</NavLink>
+
                 <CloseButton className='oc-header'></CloseButton>
               </OffcanvasHeader>
               <OffcanvasBody>
